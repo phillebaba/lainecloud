@@ -1,0 +1,8 @@
+---
+- name: Create a network
+  docker_network:
+    name: traefik-net
+    driver: overlay
+
+- name: Create traefik service
+  shell: docker service create --name traefik --constraint=node.role==manager -p 80:80 -p 8080:8080 --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock --network traefik-net traefik:v1.7 --docker --docker.swarmmode --docker.domain=traefik --docker.watch --web
