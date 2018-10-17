@@ -1,0 +1,21 @@
+---  
+- name: "Create docker group"
+  group:
+    name: docker
+    state: present
+
+- name: "Add pi to docker group"
+  user:
+    name: pi
+    groups: docker
+    append: yes
+
+- name: "Restart docker service"
+  service: 
+    name: docker
+    state: started
+
+- name: "get docker info"
+  shell: docker info
+  register: docker_info
+  changed_when: false

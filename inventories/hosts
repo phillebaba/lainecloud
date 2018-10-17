@@ -1,0 +1,5 @@
+[manager]
+manager1 ansible_host="192.168.1.46"
+
+[worker]
+worker1 ansible_host="192.168.1.52"

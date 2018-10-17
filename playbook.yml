@@ -1,0 +1,14 @@
+- hosts: manager
+  become: true
+  roles:
+    - docker
+    - manager
+    - traefik
+    - portainer
+
+- hosts: worker
+  become: true
+  roles:
+    - docker
+    - worker
+
