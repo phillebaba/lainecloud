@@ -4,6 +4,7 @@
     - docker
     - manager
     - traefik
+    - portainer
 
 - hosts: worker
   become: true

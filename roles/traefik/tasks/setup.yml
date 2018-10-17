@@ -1,8 +1,32 @@
 ---
-- name: Create a network
+- name: Create network
   docker_network:
-    name: traefik-net
+    name: traefik
     driver: overlay
 
-- name: Create traefik service
-  shell: docker service create --name traefik --constraint=node.role==manager -p 80:80 -p 8080:8080 --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock --network traefik-net traefik:v1.7 --docker --docker.swarmmode --docker.domain=traefik --docker.watch --web
+- shell: docker service ps traefik
+  ignore_errors: true
+  register: check
+
+- name: Remove existing service if present
+  shell: docker service rm traefik
+  when: 'check.stderr != "no such service: traefik"'
+
+- name: Create service
+  shell: >
+    docker service create 
+    --name traefik 
+    --constraint=node.role==manager 
+    -p 80:80 
+    -p 8080:8080 
+    --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock 
+    --network traefik 
+    --label traefik.port=8080
+    --label traefik.docker.network=traefik
+    traefik:v1.7 
+    --docker 
+    --docker.swarmmode 
+    --docker.domain=lainecloud 
+    --docker.watch 
+    --api
+    --logLevel="INFO"

@@ -1,4 +1,4 @@
 ---
 - import_tasks: setup.yml
   tags:
-    - traefik
+    - portainer
