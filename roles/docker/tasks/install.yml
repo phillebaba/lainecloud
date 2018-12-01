@@ -30,3 +30,12 @@
     name: docker-ce
     state: present
     update_cache: yes
+
+- name: Install pip
+  apt:
+    name: python-pip
+    state: present
+
+- name: Install docker-compose
+  pip:
+    name: docker-compose
