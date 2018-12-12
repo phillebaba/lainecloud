@@ -1,3 +1,5 @@
+#cloud-config
+
 # Set your hostname here, the manage_etc_hosts will update the hosts file entries as well
 hostname: $HOSTNAME
 manage_etc_hosts: true
