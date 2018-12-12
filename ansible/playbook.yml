@@ -1,0 +1,18 @@
+- hosts: master
+  become: true
+  gather_facts: True
+  roles:
+    #- hostname
+    - docker
+    - kubeadm
+    - role: master
+      tags: [master]
+
+- hosts: worker
+  become: true
+  roles:
+    #- hostname
+    - docker
+    - kubeadm
+    - role: worker
+      tags: [worker]

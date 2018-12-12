@@ -1,7 +1,0 @@
-[manager]
-manager1 ansible_host="192.168.20.6"
-
-[worker]
-worker1 ansible_host="192.168.20.7"
-worker2 ansible_host="192.168.20.8"
-worker3 ansible_host="192.168.20.9"

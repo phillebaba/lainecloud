@@ -1,0 +1,9 @@
+[master]
+master1 ansible_host="192.168.20.100" 
+
+[worker]
+worker1 ansible_host="192.168.20.101"
+worker2 ansible_host="192.168.20.102"
+worker3 ansible_host="192.168.20.103"
+worker4 ansible_host="192.168.20.104"
+worker5 ansible_host="192.168.20.105"
