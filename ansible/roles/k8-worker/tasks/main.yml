@@ -1,0 +1,3 @@
+---
+- name: Join master
+  shell: "{{ hostvars['master']['join_command']['stdout'] }} --ignore-preflight-errors=all"

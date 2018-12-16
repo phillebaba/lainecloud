@@ -1,0 +1,20 @@
+---
+- name: Check if kubeadm is init
+  shell: kubeadm config view
+  register: kubeadm_configured
+  failed_when: kubeadm_configured.rc > 1
+
+- name: Init kubeadm
+  shell: kubeadm init --pod-network-cidr 10.244.0.0/16
+  when: kubeadm_configured.rc == 1
+
+
+- name: Install flannel
+  shell: curl -sSL https://rawgit.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
+  environment:
+    KUBECONFIG: "/etc/kubernetes/admin.conf"
+  when: kubeadm_configured.rc == 1
+
+- name: Get join command
+  shell: kubeadm token create --print-join-command
+  register: join_command

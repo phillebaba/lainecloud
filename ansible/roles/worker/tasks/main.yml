@@ -1,6 +1,0 @@
----
-#- name: Load missing kernet modules
-#  shell: modprobe -- 
-
-- name: Join master
-  shell: $( {{ hostvars['master1']['join_command']['stdout'] }} --ignore-preflight-errors=all )

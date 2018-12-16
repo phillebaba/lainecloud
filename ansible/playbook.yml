@@ -1,18 +1,21 @@
+---
 - hosts: master
   become: true
-  gather_facts: True
+  gather_facts: true
   roles:
-    #- hostname
-    - docker
     - kubeadm
-    - role: master
-      tags: [master]
+    - role: k8-master
+      tags: [k8-master]
+    - role: traefik
+      tags: [traefik]
+    - role: k8-dashboard
+      tags: [k8-dashboard]
+    - role: monitoring
+      tags: [monitoring]
 
 - hosts: worker
   become: true
   roles:
-    #- hostname
-    - docker
     - kubeadm
-    - role: worker
-      tags: [worker]
+    - role: k8-worker
+      tags: [k8-worker]
