@@ -1,14 +1,14 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: alertmanager
+  name: prometheus
   namespace: monitoring
 spec:
   rules:
-    - host: alertmanager.{{ domain_name }}
+    - host: prometheus.{{ domain_name }}
       http:
         paths:
           - path: /
             backend:
-              serviceName: alertmanager-main
+              serviceName: prometheus-k8s
               servicePort: web
