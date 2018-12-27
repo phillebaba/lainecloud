@@ -1,12 +1,14 @@
-kind: PersistentVolumeClaim
+---
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: grafana-claim
   namespace: monitoring
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "managed-nfs-storage"
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 5Gi
-

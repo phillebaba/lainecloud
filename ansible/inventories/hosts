@@ -1,9 +1,0 @@
-[master]
-master ansible_host="192.168.20.100" ansible_connection="ssh" ansible_user="pirate"
-
-[worker]
-worker1 ansible_host="192.168.20.101" ansible_connection="ssh" ansible_user="pirate"
-worker2 ansible_host="192.168.20.102" ansible_connection="ssh" ansible_user="pirate"
-worker3 ansible_host="192.168.20.103" ansible_connection="ssh" ansible_user="pirate"
-worker4 ansible_host="192.168.20.104" ansible_connection="ssh" ansible_user="pirate"
-worker5 ansible_host="192.168.20.105" ansible_connection="ssh" ansible_user="pirate"

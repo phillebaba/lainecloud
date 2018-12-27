@@ -47,8 +47,8 @@ spec:
         configMap:
           name: grafana-config
       - name: grafana-storage
-      #  persistentVolumeClaim:
-      #    claimName: grafana-claim
+        persistentVolumeClaim:
+          claimName: grafana-claim
       - name: grafana-datasources
         configMap:
           name: grafana-datasources

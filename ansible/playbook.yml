@@ -1,21 +1,31 @@
 ---
+- hosts: all
+  become: true
+  roles:
+    - common
+
+- hosts: service
+  become: true
+  roles:
+    - nfs-server
+    - vault
+
+- hosts: masters,workers
+  become: true
+  roles:
+    - kubeadm
+
 - hosts: master
   become: true
   gather_facts: true
   roles:
-    - kubeadm
-    - role: k8-master
-      tags: [k8-master]
-    - role: traefik
-      tags: [traefik]
-    - role: k8-dashboard
-      tags: [k8-dashboard]
-    - role: monitoring
-      tags: [monitoring]
+    - k8-master
+    - nfs-provisioner
+    - traefik
+    - k8-dashboard
+    - monitoring
 
-- hosts: worker
+- hosts: workers
   become: true
   roles:
-    - kubeadm
-    - role: k8-worker
-      tags: [k8-worker]
+    - k8-worker

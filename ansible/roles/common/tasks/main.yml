@@ -1,0 +1,19 @@
+---
+- name: Upgrade packages
+  apt:
+    upgrade: "safe"
+
+- name: Add Hypriot signing key
+  apt_key:
+    url: https://packagecloud.io/Hypriot/rpi/gpgkey
+    state: present
+
+- name: Upgrade packages
+  apt:
+    update_cache: true
+    upgrade: "safe"
+
+- name: Install nfs common
+  apt:
+    name: nfs-common
+    state: present

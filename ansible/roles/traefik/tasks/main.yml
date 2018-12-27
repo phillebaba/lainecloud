@@ -1,12 +1,4 @@
 ---
-- apt:
-    state: present
-    name: build-essential libssl-dev libffi-dev python-dev
-
-- pip:
-    state: present
-    name: openshift
-
 # Setup Traefik load balancer
 - k8s:
     state: present

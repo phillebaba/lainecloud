@@ -1,19 +1,54 @@
 ---
-- name: Check if kubeadm is init
+# Openshift dependencies
+- name: Upgrade pip
+  shell: pip install --upgrade pip
+
+- name: Install cffi dependencies
+  apt:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - build-essential
+    - libssl-dev
+    - libffi-dev
+    - python-dev
+    - python-cffi
+
+- name: Install openshift
+  pip:
+    state: present
+    name: openshift
+
+- name: Check if kubeadm has been init
   shell: kubeadm config view
   register: kubeadm_configured
   failed_when: kubeadm_configured.rc > 1
 
+- name: Upload config file
+  copy:
+    src: ./files/kubeadm-config.yml
+    dest: /tmp/kubeadm-config.yml
+
 - name: Init kubeadm
-  shell: kubeadm init --pod-network-cidr 10.244.0.0/16
+  shell: kubeadm init --config /tmp/kubeadm-config.yml
   when: kubeadm_configured.rc == 1
 
+- name: Expose cAdvisor
+  shell: |
+    KUBEADM_SYSTEMD_CONF=/etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    sed -e "/cadvisor-port=0/d" -i "$KUBEADM_SYSTEMD_CONF"
+    if ! grep -q "authentication-token-webhook=true" "$KUBEADM_SYSTEMD_CONF"; then
+      sed -e "s/--authorization-mode=Webhook/--authentication-token-webhook=true --authorization-mode=Webhook/" -i "$KUBEADM_SYSTEMD_CONF"
+    fi
+    systemctl daemon-reload
+    systemctl restart kubelet
+  when: kubeadm_configured.rc == 1
 
 - name: Install flannel
-  shell: curl -sSL https://rawgit.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
-  environment:
-    KUBECONFIG: "/etc/kubernetes/admin.conf"
-  when: kubeadm_configured.rc == 1
+  k8s:
+    state: present
+    kubeconfig: "/etc/kubernetes/admin.conf"
+    definition: "{{ lookup('file', '../files/kube-flannel.yml') }}"
 
 - name: Get join command
   shell: kubeadm token create --print-join-command

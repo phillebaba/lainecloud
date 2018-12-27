@@ -1,0 +1,34 @@
+---
+- name: Create mount directory
+  file:
+    path: "{{ nfs_path }}"
+    state: directory
+    mode: 0755
+
+- name: Mount disk with label
+  mount:
+    path: "{{ nfs_path }}"
+    src: LABEL=nfs
+    fstype: ext4
+    state: present
+
+- name: Install nfs dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - nfs-kernel-server
+    - nfs-common
+
+- name: Enable nfs kernel server
+  systemd:
+    enabled: true
+    name: nfs-kernel-server
+
+- name: Add nfs configuration
+  lineinfile:
+    path: /etc/exports
+    line: "{{ nfs_path }} 192.168.20.100/24(rw,sync,no_subtree_check,no_root_squash)"
+
+- name: Update nfs config
+  shell: exportfs -a

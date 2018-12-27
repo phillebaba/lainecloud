@@ -1,0 +1,14 @@
+---
+- name: Set static variables
+  set_fact:
+    provisioner_name: "fuseim.pri/ifs"
+    nfs_server: "192.168.20.105"
+    nfs_path: "/mnt/nfs/kube"
+
+- name: Apply nfs provisioners
+  k8s:
+    state: present
+    kubeconfig: "/etc/kubernetes/admin.conf"
+    namespace: default
+    definition: "{{ lookup('template', '{{ item.src }}') | from_yaml_all | list }}"
+  with_filetree: ""

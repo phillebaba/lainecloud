@@ -22,6 +22,6 @@
 
 - name: Install kubeadm
   apt:
-    name: kubeadm=1.13.0-00
+    name: kubeadm
     state: present
     update_cache: true

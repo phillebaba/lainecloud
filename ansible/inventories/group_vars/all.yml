@@ -1,2 +1,7 @@
 ---
 domain_name: lainecloud.com
+
+# NFS
+provisioner_name: "fuseim.pri/ifs"
+nfs_server: "192.168.20.105"
+nfs_path: "/mnt/nfs/kube"

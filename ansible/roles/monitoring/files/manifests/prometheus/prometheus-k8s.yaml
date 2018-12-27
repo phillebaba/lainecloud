@@ -12,7 +12,7 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorSelector:
     matchExpressions:
-    - {key: k8s-app, operator: Exists}
+      - {key: k8s-app, operator: Exists}
   ruleSelector:
     matchLabels:
       role: prometheus-rulefiles
@@ -26,14 +26,17 @@ spec:
       memory: 512Mi
   alerting:
     alertmanagers:
-    - namespace: monitoring
-      name: alertmanager-main
-      port: web
-  #storage:
-  #  volumeClaimTemplate:
-  #    spec:
-  #      accessModes:
-  #      - ReadWriteOnce
-  #      resources:
-  #        requests:
-  #          storage: 50Gi
+      - namespace: monitoring
+        name: alertmanager-main
+        port: web
+  storage:
+    volumeClaimTemplate:
+      metadata:
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "managed-nfs-storage"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 30Gi

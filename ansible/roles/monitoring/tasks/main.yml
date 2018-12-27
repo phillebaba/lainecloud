@@ -60,7 +60,7 @@
     kubeconfig: "/etc/kubernetes/admin.conf"
     namespace: monitoring
     definition: "{{ lookup('file', '{{ item }}') }}"
-  with_fileglob: "./manifests/grafana/*.[!j2]"
+  with_fileglob: "./manifests/grafana/*.yaml"
 
 - name: Apply grafana with templates
   k8s:
@@ -76,7 +76,7 @@
     kubeconfig: "/etc/kubernetes/admin.conf"
     namespace: monitoring
     definition: "{{ lookup('file', '{{ item }}') }}"
-  with_fileglob: "./manifests/prometheus/*.[!j2]"
+  with_fileglob: "./manifests/prometheus/*.yaml"
 
 - name: Apply prometheus with templates
   k8s:
