@@ -1,0 +1,73 @@
+---
+- name: Copy Bind9 config file
+  copy:
+    src: "../files/bind9/named.conf"
+    dest: "{{ ansible_env.HOME }}"
+
+- name: Copy Bind9 lainecloud.com db
+  copy:
+    src: "../files/bind9/db.lainecloud.com"
+    dest: "{{ ansible_env.HOME }}"
+
+- name: Copy Vault config file
+  copy:
+    src: "../files/vault/config.hcl"
+    dest: "{{ ansible_env.HOME }}"
+
+- name: Copy Consul config file
+  copy:
+    src: "../files/consul/config.json"
+    dest: "{{ ansible_env.HOME }}"
+
+- name: Stop systemd-resolved
+  service:
+    name: systemd-resolved
+    state: stopped
+
+- name: Start shared services container
+  docker_service:
+    project_name: shared_services
+    definition:
+      version: "2"
+      services:
+        bind9:
+          image: phillebaba/bind9
+          ports:
+            - "53:53/udp"
+          volumes:
+            - "{{ ansible_env.HOME }}/named.conf:/etc/bind/named.conf"
+            - "{{ ansible_env.HOME }}/db.lainecloud.com:/etc/bind/db.lainecloud.com"
+          restart: always
+        vault:
+          image: vault:1.0.2
+          labels:
+            - "traefik.frontend.rule=Host:vault.service.{{ domain_name }}"
+          ports:
+            - 8200:8200
+          volumes:
+            - "{{ ansible_env.HOME }}/config.hcl:/config/vault.hcl"
+          cap_add:
+            - IPC_LOCK
+          command: "server -config /config/vault.hcl"
+          restart: always
+        consul:
+          image: consul:latest
+          labels:
+            - "traefik.frontend.rule=Host:consul.service.{{ domain_name }}"
+            - "traefik.port=8500"
+          ports:
+            - 8500:8500
+          volumes:
+            - "{{ ansible_env.HOME }}/config.json:/config/consul.json"
+            - "/mnt/data/consul:/consul/data"
+          command: "agent -config-file /config/consul.json -bind 0.0.0.0 -advertise 192.168.20.105"
+          restart: always
+        traefik:
+          image: traefik
+          command: --api --docker
+          ports:
+            - 80:80
+            - 8080:8080
+          volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+          restart: always

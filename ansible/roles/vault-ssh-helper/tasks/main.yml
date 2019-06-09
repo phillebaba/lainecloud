@@ -1,0 +1,51 @@
+---
+- set_fact:
+    vault_server: 192.168.20.105
+
+- apt:
+    name: unzip
+    state: present
+
+- name: Download vault ssh helper
+  get_url:
+    url: "https://releases.hashicorp.com/vault-ssh-helper/0.1.4/vault-ssh-helper_0.1.4_linux_arm.zip"
+    dest: /usr/local/bin
+
+- name: Unarchive and move vault ssh helper
+  unarchive:
+    src: /usr/local/bin/vault-ssh-helper_0.1.4_linux_arm.zip
+    dest: /usr/local/bin
+    mode: 0755
+    owner: root
+    remote_src: true
+
+- name: Write vault ssh helper config file
+  blockinfile:
+    path: /etc/vault-ssh-helper.d/config.hcl
+    block: |
+      vault_addr = " {{ vault_server }}"
+      ssh_mount_point = "ssh"
+      ca_cert = "/etc/vault-ssh-helper.d/vault.crt"
+      tls_skip_verify = false
+      allowed_roles = "*"
+
+- name: Disable common auth and enable custom auth
+  lineinfile:
+    path: /etc/pam.d/sshd
+    regexp: "^@include common-account"
+    line: |
+      auth requisite pam_exec.so quiet expose_authtok log=/tmp/vaultssh.log /usr/local/bin/vault-ssh-helper -dev -config=/etc/vault-ssh-helper.d/config.hcl
+      auth optional pam_unix.so not_set_pass use_first_pass nodelay
+
+- name: Disable password auth and enable PAM
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: |
+      ChallengeResponseAuthentication yes
+      PasswordAuthentication no
+      UsePAM yes
+
+- name: Restart sshd service
+  service:
+    name: sshd
+    state: restarted

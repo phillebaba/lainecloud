@@ -1,0 +1,33 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+
+  vars:
+    username: admin
+    ssh_key_path: "~/.ssh/id_rsa.pub"
+    ssh_key: "{{ lookup('file', ssh_key_path) }}"
+
+  vars_prompt:
+    - name: "hostname"
+      prompt: "What is the name of this device"
+      private: false
+
+  tasks:
+    - name: create temporary build directory
+      tempfile:
+        state: directory
+        suffix: build
+      register: tmp_directory
+
+    - name: set cloud init path
+      set_fact:
+        cloud_init_path: "{{ tmp_directory.path }}/cloud-init.yml"
+
+    - name: create cloud init file
+      template:
+        src: cloud-init.yml.j2
+        dest: "{{ cloud_init_path }}"
+
+    - name: flash sd card
+      command: "flash -u {{ cloud_init_path }} {{ image_url }}"
+

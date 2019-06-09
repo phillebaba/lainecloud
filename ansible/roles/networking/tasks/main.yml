@@ -1,0 +1,14 @@
+---
+- name: install metallb
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ item }}"
+  loop: "{{ lookup('file', 'files/metallb.yml') | from_yaml_all | list }}"
+
+- name: install traefik
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ item }}"
+  loop: "{{ lookup('file', 'files/traefik.yml') | from_yaml_all | list }}"

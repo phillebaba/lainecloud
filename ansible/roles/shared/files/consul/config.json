@@ -1,0 +1,11 @@
+{
+  "ui": true,
+  "server": true,
+  "bootstrap": true,
+  "bootstrap_expect": 1,
+  "datacenter": "lainecloud",
+  "log_level": "INFO",
+  "addresses": {
+    "http": "0.0.0.0"
+  }
+}

@@ -1,103 +1,15 @@
 ---
-- name: Create monitoring namespace
+- name: create namespace
   k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
+    kubeconfig: "{{ kubeconfig }}"
     name: monitoring
     api_version: v1
     kind: Namespace
+    state: present
 
-- name: Apply K8s
+- name: install kube-prometheus
   k8s:
     state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('file', '{{ item.src }}') }}"
-  with_filetree: "./manifests/k8s/"
-
-- name: Appply Prometheus Operator
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('file', '{{ item.src }}') }}"
-  with_filetree: "./manifests/prometheus-operator/"
-
-- name: Apply Node Exporter
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('file', '{{ item.src }}') }}"
-  with_filetree: "./manifests/node-exporter/"
-
-- name: Apply armexporter
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('file', '{{ item.src }}') }}"
-  with_filetree: "./manifests/armexporter/"
-
-- name: Apply kube state metrics
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('file', '{{ item.src }}') }}"
-  with_filetree: "./manifests/kube-state-metrics/"
-
-- name: Apply grafana credentials
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('file', './manifests/grafana/grafana-credentials.yaml') }}"
-
-- name: Apply grafana
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('file', '{{ item }}') }}"
-  with_fileglob: "./manifests/grafana/*.yaml"
-
-- name: Apply grafana with templates
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('template', '{{ item }}') | from_yaml }}"
-  with_fileglob: "./manifests/grafana/*.j2"
-
-- name: Apply prometheus
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('file', '{{ item }}') }}"
-  with_fileglob: "./manifests/prometheus/*.yaml"
-
-- name: Apply prometheus with templates
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('template', '{{ item }}') | from_yaml }}"
-  with_fileglob: "./manifests/prometheus/*.j2"
-
-- name: Apply alert manager
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: monitoring
-    definition: "{{ lookup('template', '{{ item.src }}') | from_yaml }}"
-  with_filetree: "./manifests/alertmanager/"
-
-#- name: Apply SMTP Server
-#  k8s:
-#    state: present
-#    kubeconfig: "/etc/kubernetes/admin.conf"
-#    namespace: monitoring
-#    definition: "{{ lookup('file', '{{ item.src }}') }}"
-#  with_filetree: "./manifests/smtp-server/"
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', item.path) }}"
+  with_filetree: ""

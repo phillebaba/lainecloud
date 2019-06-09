@@ -1,0 +1,12 @@
+---
+- hosts: central
+  roles:
+    - shared
+
+- hosts:
+    - master
+    - worker
+  vars:
+    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+  roles:
+    - k3s

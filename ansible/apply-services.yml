@@ -1,0 +1,30 @@
+---
+- hosts: master
+
+  # Install required python dependencies
+  pre_tasks:
+    - name: Install cffi dependencies
+      become: true
+      apt:
+        state: present
+        name:
+          - build-essential
+          - libssl-dev
+          - libffi-dev
+          - python-dev
+          - python-cffi
+
+    - name: Install pip dependencies
+      become: true
+      pip:
+        name:
+          - openshift
+        state: present
+
+  vars:
+    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+
+  roles:
+    #- nfs-provisioner
+    - networking
+    - monitoring
