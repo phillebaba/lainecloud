@@ -6,10 +6,15 @@
     username: admin
     ssh_key_path: "~/.ssh/id_rsa.pub"
     ssh_key: "{{ lookup('file', ssh_key_path) }}"
+    image_url: "https://github.com/hypriot/image-builder-rpi/releases/download/v1.10.0/hypriotos-rpi-v1.10.0.img.zip"
 
   vars_prompt:
     - name: "hostname"
       prompt: "What is the name of this device"
+      private: false
+
+    - name: "device"
+      prompt: "Which device should be flashed (e.g. /dev/sdb)"
       private: false
 
   tasks:
@@ -29,5 +34,5 @@
         dest: "{{ cloud_init_path }}"
 
     - name: flash sd card
-      command: "flash -u {{ cloud_init_path }} {{ image_url }}"
+      command: "flash -f -d {{ device }} -u {{ cloud_init_path }} {{ image_url }}"
 

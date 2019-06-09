@@ -4,10 +4,12 @@ hostname: {{ hostname }}
 manage_etc_hosts: true
 
 users:
-  - name: {{ username }}
+  - name: pirate
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     groups: users,docker,video
+    lock_passwd: true
+    ssh_pwauth: false
     ssh-authorized-keys:
       - {{ ssh_key }}
 
