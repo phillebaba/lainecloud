@@ -1,0 +1,26 @@
+---
+- name: install metallb
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ item }}"
+  loop: "{{ lookup('template', 'templates/metallb.yml.j2') | from_yaml_all | list }}"
+
+- name: install traefik
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ item }}"
+  loop: "{{ lookup('template', 'templates/traefik.yml.j2') | from_yaml_all | list }}"
+  vars:
+    ingress_class: "public"
+
+#- name: install traefik
+#  k8s:
+  #    state: present
+  #kubeconfig: "{{ kubeconfig }}"
+  #  definition: "{{ item }}"
+  #loop: "{{ lookup('template', 'templates/traefik.yml.j2') | from_yaml_all | list }}"
+  #vars:
+    #  ingress_class: "private"
+

@@ -25,6 +25,8 @@
     kubeconfig: "/etc/rancher/k3s/k3s.yaml"
 
   roles:
+    - metrics-fix
     #- nfs-provisioner
     - networking
     - monitoring
+    - status-app

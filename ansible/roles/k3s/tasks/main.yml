@@ -1,5 +1,0 @@
----
-- import_tasks: install.yml
-
-- import_tasks: metrics-server.yml
-  when: "'master' in group_names"
