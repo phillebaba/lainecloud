@@ -10,3 +10,6 @@ https://www.performancemagic.com/2019/01/10/client-vpn-mutual-auth/
 
 # PFSense Tutorial
 https://getflix.zendesk.com/hc/en-gb/articles/215681703-Full-VPN-Setup-for-pfSense-Router-OpenVPN-Client
+
+# Port Forwarding
+https://serverfault.com/questions/557818/port-forwarding-through-openvpn-server
