@@ -1,12 +1,11 @@
 ---
-- hosts: central
+- hosts:
+    - nfs
   roles:
-    - shared
+    - disk-format
 
 - hosts:
     - master
     - worker
-  vars:
-    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
   roles:
     - k3s

@@ -1,13 +1,63 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: managed-nfs-storage
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: "fuseim.pri/ifs"
+parameters:
+  archiveOnDelete: "false"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nfs
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: nfs-client-provisioner
+  namespace: nfs
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccount: nfs-client-provisioner
+      containers:
+        - name: nfs-client-provisioner
+          image: quay.io/external_storage/nfs-client-provisioner-arm:latest
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: "fuseim.pri/ifs"
+            - name: NFS_SERVER
+              value: 10.43.223.78
+            - name: NFS_PATH
+              value: "/"
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: 10.43.223.78
+            path: "/"
 ---
 kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: nfs-client-provisioner
+  namespace: nfs
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: nfs-client-provisioner-runner
+  namespace: nfs
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -26,6 +76,7 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: run-nfs-client-provisioner
+  namespace: nfs
 subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
@@ -39,6 +90,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: leader-locking-nfs-client-provisioner
+  namespace: nfs
 rules:
   - apiGroups: [""]
     resources: ["endpoints"]
@@ -48,6 +100,7 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: leader-locking-nfs-client-provisioner
+  namespace: nfs
 subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
@@ -56,3 +109,9 @@ roleRef:
   kind: Role
   name: leader-locking-nfs-client-provisioner
 apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nfs-client-provisioner
+  namespace: nfs

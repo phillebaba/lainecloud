@@ -1,19 +1,16 @@
 ---
-- set_fact:
-    k3s_url: "https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/k3s-armhf"
-    node_token_file_path: /var/lib/rancher/k3s/server/node-token
+- name: download k3s binary
+  become: true
+  get_url:
+    url: "{{ k3s_url }}"
+    dest: /usr/local/bin/k3s
+    mode: "0777"
+    force: true
 
 - block:
   - name: set master start command
     set_fact:
-      start_command: "/usr/local/bin/k3s server --no-deploy traefik --no-deploy servicelb --docker --kubelet-arg='address=0.0.0.0'"
-
-  - name: download k3s binary
-    become: true
-    get_url:
-      url: "{{ k3s_url }}"
-      dest: /usr/local/bin/k3s
-      mode: "0777"
+      start_command: "/usr/local/bin/k3s server --no-deploy traefik --no-deploy servicelb --docker --kubelet-arg='address=0.0.0.0' --write-kubeconfig-mode 644"
 
   - name: copy k3s service file
     become: true
@@ -33,7 +30,13 @@
       state: restarted
   when: "'master' in group_names"
 
+
 - block:
+  - name: set extra nfs label
+    set_fact:
+      extra_label: "--node-label node-role.kubernetes.io/nfs=true"
+    when: "'nfs' in group_names"
+
   - name: wait for node-token file to be present
     become: true
     wait_for:
@@ -49,14 +52,7 @@
 
   - name: set worker start command
     set_fact:
-      start_command: "/usr/local/bin/k3s agent --server https://{{ groups.master[0] }}:6443 --token {{ join_token.stdout }} --docker"
-
-  - name: download k3s binary
-    become: true
-    get_url:
-      url: "{{ k3s_url }}"
-      dest: /usr/local/bin/k3s
-      mode: "0777"
+      start_command: "/usr/local/bin/k3s agent --server https://{{ groups.master[0] }}:6443 --token {{ join_token.stdout }} --docker {{ extra_label }}"
 
   - name: copy k3s service file
     become: true
