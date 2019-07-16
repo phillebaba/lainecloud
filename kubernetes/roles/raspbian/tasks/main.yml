@@ -33,6 +33,14 @@
   when: ansible_hostname != hostname
   become: true
 
-#- name: Install docker
-#  shell: curl -sL get.docker.com | sed 's/9)/10)/' | sh
-#  become: true
+- name: Install docker
+  shell: curl -sL get.docker.com | sed 's/9)/10)/' | sh
+  become: true
+
+# Required by nfs client provisioner
+# https://github.com/kubernetes-incubator/external-storage/issues/978<Paste>
+- name: Install nfs common
+  apt:
+    name: nfs-common
+    state: present
+  become: true
