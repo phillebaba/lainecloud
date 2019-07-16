@@ -1,0 +1,38 @@
+---
+- name: enable ipv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: true
+
+- name: Set index to worker hostname
+  set_fact:
+    hostname: "{{ hostname }}-{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'][-1] }}"
+  when: hostname == "worker"
+
+- debug: var=hostname
+
+- name: Set hostname
+  copy:
+    dest: /etc/hostname
+    content: "{{ hostname }}"
+  become: true
+
+- name: Update /etc/hosts file
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1'
+    line: 127.0.1.1 {{ hostname }}
+  become: true
+
+- name: Reboot if hostname is changed
+  reboot:
+  when: ansible_hostname != hostname
+  become: true
+
+#- name: Install docker
+#  shell: curl -sL get.docker.com | sed 's/9)/10)/' | sh
+#  become: true

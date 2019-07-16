@@ -2,27 +2,27 @@
 - hosts: master
   pre_tasks:
     - name: Install k8s kubectl dependencies
-      become: true
       apt:
         state: present
         name:
+          - python-pip
           - build-essential
           - libssl-dev
           - libffi-dev
           - python-dev
           - python-cffi
+      become: true
 
     - name: Install pip dependencies
-      become: true
       pip:
         name:
           - openshift
         state: present
+      become: true
   vars:
     kubeconfig: "/etc/rancher/k3s/k3s.yaml"
   roles:
     - nfs
     - metrics-fix
     - networking
-    - monitoring
-    - status-app
+    #- monitoring
