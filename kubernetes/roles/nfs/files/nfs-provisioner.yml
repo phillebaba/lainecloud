@@ -14,7 +14,7 @@ metadata:
   name: nfs
 ---
 kind: Deployment
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: nfs-client-provisioner
   namespace: nfs
@@ -27,7 +27,7 @@ spec:
       labels:
         app: nfs-client-provisioner
     spec:
-      serviceAccount: nfs-client-provisioner
+      serviceAccountName: nfs-client-provisioner
       containers:
         - name: nfs-client-provisioner
           image: quay.io/external_storage/nfs-client-provisioner-arm:latest
@@ -36,16 +36,22 @@ spec:
               mountPath: /persistentvolumes
           env:
             - name: PROVISIONER_NAME
-              value: "fuseim.pri/ifs"
+              value: fuseim.pri/ifs
             - name: NFS_SERVER
-              value: 10.43.223.78
+              value: 10.43.118.159
+              #value: nfs-server.nfs.svc.cluster.local
             - name: NFS_PATH
-              value: "/"
+              value: /
+      nodeSelector:
+        node-role.kubernetes.io/nfs: "true"
       volumes:
         - name: nfs-client-root
           nfs:
-            server: 10.43.223.78
-            path: "/"
+            server: 10.43.118.159
+            #server: nfs-server.nfs.svc.cluster.local
+            # cant use service name as dns
+            # https://github.com/kubernetes/minikube/issues/3417
+            path: / # this has to be single slash
 ---
 kind: ServiceAccount
 apiVersion: v1
@@ -80,7 +86,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
-    namespace: default
+    namespace: nfs
 roleRef:
   kind: ClusterRole
   name: nfs-client-provisioner-runner
@@ -104,14 +110,8 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
-    namespace: default
+    namespace: nfs
 roleRef:
   kind: Role
   name: leader-locking-nfs-client-provisioner
-apiGroup: rbac.authorization.k8s.io
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: nfs-client-provisioner
-  namespace: nfs
+  apiGroup: rbac.authorization.k8s.io

@@ -15,7 +15,7 @@ spec:
   selector:
     role: nfs-server
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nfs-server
@@ -51,3 +51,5 @@ spec:
         hostPath:
           path: /mnt/nfs
           type: Directory
+      nodeSelector:
+        node-role.kubernetes.io/nfs: "true"
