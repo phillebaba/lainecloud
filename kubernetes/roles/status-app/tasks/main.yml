@@ -1,9 +1,0 @@
----
-- name: install status-app
-  k8s:
-    state: present
-    kubeconfig: "{{ kubeconfig }}"
-    definition: "{{ item }}"
-  loop: "{{ lookup('file', 'files/status-app.yml') | from_yaml_all | list }}"
-  tags:
-    - temp
