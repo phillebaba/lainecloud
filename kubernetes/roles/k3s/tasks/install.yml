@@ -10,7 +10,7 @@
 - block:
   - name: set master start command
     set_fact:
-      start_command: "/usr/local/bin/k3s server --no-deploy traefik --no-deploy servicelb --docker --kubelet-arg='address=0.0.0.0' --write-kubeconfig-mode 644"
+      start_command: "/usr/local/bin/k3s server --no-deploy traefik --no-deploy servicelb --docker --write-kubeconfig-mode 644"
 
   - name: copy k3s service file
     become: true
