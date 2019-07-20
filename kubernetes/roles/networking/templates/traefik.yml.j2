@@ -64,8 +64,9 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
-        [entryPoints.http.redirect]
-        entryPoint ="https"
+      compress = true
+        #[entryPoints.http.redirect]
+        #entryPoint ="https"
       [entryPoints.https]
       address = ":443"
         [entryPoints.https.tls]
@@ -91,7 +92,7 @@ data:
       [acme.httpChallenge]
         entryPoint="http"
 ---
-kind: DaemonSet
+kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
   name: traefik-ingress-controller
@@ -99,6 +100,10 @@ metadata:
   labels:
     k8s-app: traefik-ingress-lb
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: traefik-ingress-lb
   template:
     metadata:
       labels:
@@ -117,6 +122,13 @@ spec:
         volumeMounts:
           - mountPath: "/config"
             name: "config"
+        resources:
+          limits:
+            cpu: 200m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
         ports:
         - name: http
           containerPort: 80
@@ -126,12 +138,6 @@ spec:
           hostPort: 443
         - name: admin
           containerPort: 8080
-        securityContext:
-          capabilities:
-            drop:
-            - ALL
-            add:
-            - NET_BIND_SERVICE
         args:
         - --configfile=/config/traefik.toml
 ---
