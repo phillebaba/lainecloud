@@ -1,0 +1,74 @@
+---
+- name: download k3s binary
+  become: true
+  get_url:
+    url: "{{ k3s_url }}"
+    dest: /usr/local/bin/k3s
+    mode: "0777"
+    force: true
+
+- block:
+  - name: set master start command
+    set_fact:
+      start_command: "/usr/local/bin/k3s server --no-deploy traefik --no-deploy servicelb --docker --write-kubeconfig-mode 644"
+
+  - name: copy k3s service file
+    become: true
+    template:
+      src: k3s.service.j2
+      dest: /etc/systemd/system/k3s.service
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: enable and restart k3s service
+    become: true
+    systemd:
+      name: k3s
+      daemon_reload: true
+      enabled: true
+      state: restarted
+  when: "'master' in group_names"
+
+
+- block:
+  - name: set extra nfs label
+    set_fact:
+      extra_label: "--node-label node-role.kubernetes.io/nfs=true"
+    when: "'nfs' in group_names"
+
+  - name: wait for node-token file to be present
+    become: true
+    wait_for:
+      path: "{{ node_token_file_path }}"
+      connect_timeout: 300
+    delegate_to: "{{ groups.master[0] }}"
+
+  - name: get join token
+    become: true
+    shell: "cat {{ node_token_file_path }}"
+    register: join_token
+    delegate_to: "{{ groups.master[0] }}"
+
+  - name: set worker start command
+    set_fact:
+      start_command: "/usr/local/bin/k3s agent --server https://{{ groups.master[0] }}:6443 --token {{ join_token.stdout }} --docker {{ extra_label }}"
+
+  - name: copy k3s service file
+    become: true
+    template:
+      src: k3s.service.j2
+      dest: /etc/systemd/system/k3s.service
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: enable and restart k3s service
+    become: true
+    systemd:
+      name: k3s
+      daemon_reload: true
+      enabled: true
+      state: restarted
+  when: "'worker' in group_names"
+

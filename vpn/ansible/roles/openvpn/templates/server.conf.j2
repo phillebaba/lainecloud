@@ -1,0 +1,43 @@
+# OpenVPN Server Config
+port {{ openvpn_port }}
+proto {{ openvpn_protocol }}
+
+dev tun
+
+ca /etc/openvpn/ca.crt
+cert /etc/openvpn/server.crt
+key /etc/openvpn/server.key  # This file should be kept secret
+dh /etc/openvpn/dh.pem
+
+topology subnet
+
+server {{ openvpn_server_subnet }}
+
+ifconfig-pool-persist /var/log/openvpn/ipp.txt
+
+# Push routes to the client
+push "route {{ openvpn_push_route }}"
+
+keepalive 10 120
+
+cipher AES-128-CBC
+auth SHA256
+
+tls-auth /etc/openvpn/ta.key 0
+key-direction 0
+
+user nobody
+group nobody
+
+persist-key
+persist-tun
+
+status /var/log/openvpn/openvpn-status.log
+log /var/log/openvpn/openvpn.log
+verb 4
+
+explicit-exit-notify 1
+
+# Routing config for clients
+client-config-dir /etc/openvpn/ccd
+route 192.168.1.0 255.255.255.0

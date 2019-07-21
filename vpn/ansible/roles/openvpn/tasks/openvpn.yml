@@ -1,0 +1,42 @@
+---
+- name: enable ipv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: true
+
+- name: make sure log directory exists
+  file:
+    path: /var/log/openvpn
+    state: directory
+    recurse: yes
+  become: true
+
+- name: add openvpn server config file
+  template:
+    src: server.conf.j2
+    dest: /etc/openvpn/server.conf
+  become: true
+
+- name: make sure destination dir exists
+  file:
+    path: /etc/openvpn/ccd
+    state: directory
+    recurse: yes
+  become: true
+
+- name: add client configuration
+  copy:
+    src: client1
+    dest: /etc/openvpn/ccd/client1
+  become: true
+
+- name: start and enable openvpn service
+  service:
+    name: "openvpn@server"
+    state: restarted
+    enabled: true
+  become: true

@@ -1,8 +1,0 @@
----
-- name: "Initiate docker swarm"
-  shell: docker swarm init --advertise-addr {{ ansible_eth0['ipv4']['address'] }}
-  when: "docker_info.stdout.find('Swarm: inactive') != -1"
-
-- name: "Get docker swarm worker token"
-  shell: docker swarm join-token -q worker
-  register: worker_token

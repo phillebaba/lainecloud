@@ -1,0 +1,14 @@
+---
+- name: apply nfs-server
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ item }}"
+  loop: "{{ lookup('file', 'files/nfs-server.yml') | from_yaml_all | list }}"
+
+- name: apply nfs-provisioner
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ item }}"
+  loop: "{{ lookup('file', 'files/nfs-provisioner.yml') | from_yaml_all | list }}"

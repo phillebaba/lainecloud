@@ -1,0 +1,6 @@
+kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+namespace: "nfs-provisioner"
+
+provisioner_name: "fuseim.pri/ifs"
+nfs_server: "{{ groups.central[0] }}"
+nfs_path: "/mnt/nfs/kube"

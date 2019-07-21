@@ -1,0 +1,69 @@
+---
+- name: copy easy-rsa script
+  command: "cp -R /usr/share/easy-rsa/3.0.3/ /home/ec2-user/openvpn-ca"
+  args:
+    creates: /home/ec2-user/openvpn-ca
+  become: true
+
+- name: recursively change ownership of openvpn-ca directory
+  file:
+    path: /home/ec2-user/openvpn-ca
+    state: directory
+    recurse: yes
+    owner: ec2-user
+    group: ec2-user
+  become: true
+
+- block:
+  - name: init pki
+    command: ./easyrsa --batch init-pki
+    args:
+      chdir: ~/openvpn-ca
+      creates: ~/openvpn-ca/pki
+
+  - name: build ca
+    command: ./easyrsa --batch build-ca nopass
+    args:
+      chdir: ~/openvpn-ca
+      creates: ~/openvpn-ca/pki/ca.crt
+
+  - name: build key server
+    command: ./easyrsa --batch build-server-full server nopass
+    args:
+      chdir: ~/openvpn-ca
+      creates: ~/openvpn-ca/pki/issued/server.crt
+
+  - name: build dh
+    command: ./easyrsa --batch gen-dh
+    args:
+      chdir: ~/openvpn-ca
+      creates: ~/openvpn-ca/pki/dh.pem
+
+  - name: gen hmac signature
+    shell: /usr/sbin/openvpn --genkey --secret pki/ta.key
+    args:
+      chdir: ~/openvpn-ca
+      creates: ~/openvpn-ca/pki/ta.key
+
+  - name: build client certificates
+    command: ./easyrsa --batch build-client-full client1 nopass
+    args:
+      chdir: ~/openvpn-ca
+      creates: ~/openvpn-ca/pki/issued/client1.crt
+  environment:
+    EASYRSA_KEY_SIZE: 2048
+    EASYRSA_DN: "org"
+    EASYRSA_REQ_CN: "lainecloud.com"
+    EASYRSA_REQ_COUNTRY: "SE"
+    EASYRSA_REQ_PROVINCE: "SE"
+    EASYRSA_REQ_CITY: "Gothenburg"
+    EASYRSA_REQ_ORG: "Lainecloud"
+    EASYRSA_REQ_OU: "IT"
+    EASYRSA_REQ_EMAIL: "philip.laine@gmail.com"
+    EASYRSA_REQ_KEY_NAME: "server"
+
+- name: copy certificates and keys
+  command: cp ca.crt issued/server.crt private/server.key dh.pem ta.key /etc/openvpn
+  args:
+    chdir: /home/ec2-user/openvpn-ca/pki
+  become: true

@@ -1,0 +1,20 @@
+---
+- name: install epel-release
+  yum:
+    name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+    state: present
+  become: true
+
+- name: enable epel repository
+  command: yum-config-manager --enable epel
+  become: true
+
+- name: install dependencies
+  yum:
+    name:
+      - openvpn
+      - easy-rsa
+      - iptables-services
+    state: present
+    update_cache: true
+  become: true

@@ -1,0 +1,15 @@
+---
+- name: create namespace
+  k8s:
+    kubeconfig: "{{ kubeconfig }}"
+    name: monitoring
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: install kube-prometheus
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', item.path) }}"
+  with_filetree: ""

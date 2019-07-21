@@ -1,0 +1,5 @@
+---
+k3s_version: "v0.6.1"
+k3s_url: "https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/k3s-armhf"
+node_token_file_path: /var/lib/rancher/k3s/server/node-token
+extra_label: ""
