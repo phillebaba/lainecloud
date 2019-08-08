@@ -25,4 +25,4 @@
     - nfs
     - metrics-fix
     - networking
-    #- monitoring
+    - monitoring

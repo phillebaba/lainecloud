@@ -1,5 +1,5 @@
 ---
-- name: create namespace
+- name: create monitoring namespace
   k8s:
     kubeconfig: "{{ kubeconfig }}"
     name: monitoring
@@ -7,9 +7,50 @@
     kind: Namespace
     state: present
 
-- name: install kube-prometheus
+- name: install operator
   k8s:
     state: present
     kubeconfig: "{{ kubeconfig }}"
-    definition: "{{ lookup('file', item.path) }}"
-  with_filetree: ""
+    definition: "{{ lookup('file', item.src) }}"
+    namespace: monitoring
+  with_filetree: "operator"
+
+- name: install prometheus
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', item.src) }}"
+    namespace: monitoring
+  with_filetree: "prometheus"
+
+- name: install alertmanager
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', item.src) }}"
+    namespace: monitoring
+  with_filetree: "alertmanager"
+
+- name: install grafana
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', item.src) }}"
+    namespace: monitoring
+  with_filetree: "grafana"
+
+- name: install exporters
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', item.src) }}"
+    namespace: monitoring
+  with_filetree: "exporter"
+
+- name: install kube-state-metrics
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', item.src) }}"
+    namespace: monitoring
+  with_filetree: "kube-state-metrics"

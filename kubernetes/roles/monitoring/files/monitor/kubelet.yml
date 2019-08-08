@@ -9,14 +9,18 @@ spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     interval: 30s
-    port: https-metrics
     scheme: https
+    port: https-metrics
+    tlsConfig:
+      insecureSkipVerify: true
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     honorLabels: true
     interval: 30s
     path: /metrics/cadvisor
-    port: https-metrics
     scheme: https
+    port: https-metrics
+    tlsConfig:
+      insecureSkipVerify: true
   jobLabel: k8s-app
   namespaceSelector:
     matchNames:

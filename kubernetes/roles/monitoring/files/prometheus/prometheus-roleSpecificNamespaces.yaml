@@ -52,7 +52,7 @@ items:
   kind: Role
   metadata:
     name: prometheus-k8s
-    namespace: metallb-system
+    namespace: traefik-private
   rules:
   - apiGroups:
     - ""
