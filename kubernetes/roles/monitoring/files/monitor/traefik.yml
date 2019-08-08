@@ -2,18 +2,18 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: metallb-controller
-  name: metallb
+    k8s-app: traefik-ingress-lb
+  name: traefik
   namespace: monitoring
 spec:
   endpoints:
   - interval: 30s
-    port: http
     scheme: http
+    port: admin
   jobLabel: k8s-app
   namespaceSelector:
     matchNames:
-    - metallb-system
+    - networking
   selector:
-    matchLabels:
-      k8s-app: metallb-controller
+    matchlabels:
+      k8s-app: traefik

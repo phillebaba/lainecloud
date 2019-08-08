@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: alertmanager-ingress
+  annotations:
+    kubernetes.io/ingress.class: "traefik-private"
+spec:
+  rules:
+  - host: alertmanager.internal.lainecloud.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: alertmanager-main
+          servicePort: 9093
+
