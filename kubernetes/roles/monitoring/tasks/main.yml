@@ -45,7 +45,7 @@
     kubeconfig: "{{ kubeconfig }}"
     definition: "{{ lookup('file', item.src) }}"
     namespace: monitoring
-  with_filetree: "exporter"
+  with_filetree: "node-exporter"
 
 - name: install kube-state-metrics
   k8s:

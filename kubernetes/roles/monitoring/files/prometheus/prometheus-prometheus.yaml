@@ -26,7 +26,7 @@ spec:
       namespace: monitoring
       port: web
   baseImage: prom/prometheus
-  externalUrl: http://prometheus.192.168.99.100.nip.io
+  externalUrl: http://prometheus.internal.lainecloud.com
   nodeSelector:
     kubernetes.io/os: linux
   podMonitorSelector: {}
