@@ -13,4 +13,3 @@ spec:
         backend:
           serviceName: alertmanager-main
           servicePort: 9093
-

@@ -13,4 +13,3 @@ spec:
         backend:
           serviceName: prometheus-k8s
           servicePort: 9090
-
