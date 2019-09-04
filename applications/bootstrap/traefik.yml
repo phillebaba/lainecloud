@@ -2,14 +2,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: metallb
+  name: traefik
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/phillebaba/laine-cloud.git
-    targetRevision: feature/argo-cd
-    path: continuous-deployment/metallb
+    targetRevision: master
+    path: applications/traefik
   destination:
     server: https://kubernetes.default.svc
     namespace: ingress
