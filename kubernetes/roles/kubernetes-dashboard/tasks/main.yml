@@ -1,8 +1,0 @@
----
-- name: Create K8 dashboard
-  k8s:
-    state: present
-    kubeconfig: "/etc/kubernetes/admin.conf"
-    namespace: kube-system
-    definition: "{{ lookup('template', '{{ item.src }}') | from_yaml_all | list }}"
-  with_filetree: ""

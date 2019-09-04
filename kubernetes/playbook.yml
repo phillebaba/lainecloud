@@ -1,3 +1,43 @@
 ---
-- import_playbook: setup-cluster
-- import_playbook: apply-services
+- hosts: all
+  roles:
+    - hypriot
+
+- hosts:
+    - nfs
+  gather_facts: true
+  roles:
+    - disk-format
+
+- hosts:
+    - master
+    - worker
+  roles:
+    - k3s
+
+- hosts: master
+  pre_tasks:
+    - name: Install k8s kubectl dependencies
+      apt:
+        state: present
+        name:
+          - python-pip
+          - build-essential
+          - libssl-dev
+          - libffi-dev
+          - python-dev
+          - python-cffi
+      become: true
+
+    - name: Install pip dependencies
+      pip:
+        name:
+          - openshift
+        state: present
+      become: true
+  vars:
+    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+  roles:
+    - nfs
+    - metrics-fix
+    - argocd

@@ -1,19 +1,26 @@
 ---
-- name: Upgrade packages
-  apt:
-    upgrade: "safe"
+- name: set iptables to legacy mode
+  become: true
+  alternatives:
+    name: iptables
+    path: /usr/sbin/iptables-legacy
+  register: result
 
-- name: Add Hypriot signing key
-  apt_key:
-    url: https://packagecloud.io/Hypriot/rpi/gpgkey
-    state: present
+- debug:
+    var: result
 
-- name: Upgrade packages
+- name: reboot machine if alternative has been updated
+  become: true
+  reboot:
+  when: result.changed
+
+- name: update package list
+  become: true
   apt:
     update_cache: true
-    upgrade: "safe"
 
-- name: Install nfs common
+- name: install nfs common
+  become: true
   apt:
     name: nfs-common
     state: present

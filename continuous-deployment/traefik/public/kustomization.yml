@@ -1,0 +1,8 @@
+bases:
+- ../base
+nameSuffix: -public
+configMapGenerator:
+- name: traefik-conf
+  behavior: replace
+  files:
+    - traefik.toml

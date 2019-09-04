@@ -9,6 +9,7 @@ metadata:
   name: nfs-server
   namespace: nfs
 spec:
+  clusterIP: 10.43.118.159
   ports:
     - name: nfs
       port: 2049

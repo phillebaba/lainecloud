@@ -1,0 +1,24 @@
+defaultEntryPoints = ["http","https"]
+debug = false
+logLevel = "INFO"
+
+InsecureSkipVerify = true
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+  compress = true
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.tls]
+
+[api]
+  entryPoint = "traefik"
+  dashboard = true
+
+[metrics]
+  [metrics.prometheus]
+    buckets = [0.1,0.3,1.2,5.0]
+
+[kubernetes]
+  ingressClass = "traefik-private"

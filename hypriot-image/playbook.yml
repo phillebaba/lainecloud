@@ -6,7 +6,8 @@
     username: admin
     ssh_key_path: "~/.ssh/id_rsa.pub"
     ssh_key: "{{ lookup('file', ssh_key_path) }}"
-    image_url: "https://github.com/hypriot/image-builder-rpi/releases/download/v1.10.1/hypriotos-rpi-v1.10.1.img.zip"
+    image_version: v1.11.1
+    image_url: "https://github.com/hypriot/image-builder-rpi/releases/download/{{ image_version }}/hypriotos-rpi-{{ image_version }}.img.zip"
 
   vars_prompt:
     - name: "hostname"

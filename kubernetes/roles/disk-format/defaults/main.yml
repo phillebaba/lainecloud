@@ -1,4 +1,1 @@
-disk_name: "/dev/sda"
-partition_number: 1
-disk_partition: "{{ disk_name }}{{ partition_number }}"
 mount_directory: "/mnt/nfs"

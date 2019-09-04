@@ -1,0 +1,6 @@
+resources:
+- traefik.yml
+configMapGenerator:
+- name: traefik-conf
+  files:
+    - traefik.toml

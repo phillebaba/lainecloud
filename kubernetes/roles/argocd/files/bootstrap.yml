@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bootstrap
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/phillebaba/laine-cloud.git
+    targetRevision: HEAD
+    path: continuous-deployment/bootstrap
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd

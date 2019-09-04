@@ -1,2 +1,49 @@
 ---
-- import_tasks: storage.yml
+- name: Install parted
+  become: true
+  apt:
+    name: parted
+    state: present
+
+- name: get device name
+  set_fact:
+    device_name: "{{ item.key }}"
+  no_log: True
+  with_dict: "{{ ansible_facts.devices }}"
+  when: "item.key.startswith('sd')"
+
+- set_fact:
+    device_path: "/dev/{{ device_name }}"
+    partition_number: 1
+
+- name: print device name
+  debug: var=device_path
+
+- name: Create NFS partition
+  become: true
+  parted:
+    device: "{{ device_path }}"
+    number: "{{ partition_number }}"
+    label: gpt
+    state: present
+
+- name: Create a ext4 filesystem on /dev/sda1
+  become: true
+  filesystem:
+    fstype: ext4
+    dev: "{{ device_path }}{{ partition_number }}"
+    opts: -cc
+
+- name: Create nfs mount directory
+  become: true
+  file:
+    path: "{{ mount_directory }}"
+    state: directory
+
+- name: Mount nfs partition
+  become: true
+  mount:
+    src: "{{ device_path }}{{ partition_number }}"
+    path: "{{ mount_directory }}"
+    fstype: ext4
+    state: mounted

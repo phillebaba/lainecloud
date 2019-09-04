@@ -1,0 +1,23 @@
+- name: create argocd namespace
+  k8s:
+    kubeconfig: "{{ kubeconfig }}"
+    name: argocd
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: install argocd
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', 'install.yml') }}"
+    namespace: argocd
+
+- name: add bootstrap application
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', 'bootstrap.yml') }}"
+    namespace: argocd
+
+

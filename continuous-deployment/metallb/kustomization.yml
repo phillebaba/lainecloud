@@ -1,0 +1,3 @@
+resources:
+- metallb.yml
+namespace: ingress
