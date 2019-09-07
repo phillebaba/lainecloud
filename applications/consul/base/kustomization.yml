@@ -1,0 +1,10 @@
+resources:
+  - clusterrole.yml
+  - service.yml
+  - serviceaccount.yml
+  - statefulset.yml
+
+configMapGenerator:
+  - name: consul
+    files:
+      - server.json
