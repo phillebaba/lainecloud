@@ -23,4 +23,3 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: consul
-    namespace: default
