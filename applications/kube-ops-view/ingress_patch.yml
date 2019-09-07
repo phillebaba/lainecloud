@@ -1,0 +1,10 @@
+- op: replace
+  path: /spec/rules/0/host
+  value: kube-ops-view.internal.lainecloud.com
+
+- op: add
+  path: /metadata/annotations
+  value:
+    kubernetes.io/ingress.class: traefik-private
+
+

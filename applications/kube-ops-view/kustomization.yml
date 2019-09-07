@@ -1,0 +1,17 @@
+resources:
+  - ./base
+
+namespace: monitoring
+
+images:
+  - name: hjacobs/kube-ops-view
+    newName: phillebaba/kube-ops-view
+    newTag: latest
+
+patchesJson6902:
+- target:
+    group: extensions
+    version: v1beta1
+    kind: Ingress
+    name: kube-ops-view
+  path: ingress_patch.yml
