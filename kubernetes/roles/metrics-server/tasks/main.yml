@@ -1,9 +1,9 @@
-- name: render storage-provisioner kustomization
+- name: render metrics-server kustomization
   command: kubectl kustomize "{{ role_path }}/files"
   delegate_to: localhost
   register: manifest
 
-- name: provision storage-provisioner
+- name: provision metrics-server
   k8s:
     state: present
     kubeconfig: "{{ kubeconfig }}"

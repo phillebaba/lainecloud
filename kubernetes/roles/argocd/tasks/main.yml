@@ -6,18 +6,13 @@
     kind: Namespace
     state: present
 
-- name: install argocd
+- name: render argocd kustomization
+  command: kubectl kustomize "{{ role_path }}/files"
+  delegate_to: localhost
+  register: manifest
+
+- name: provision argocd
   k8s:
     state: present
     kubeconfig: "{{ kubeconfig }}"
-    definition: "{{ lookup('file', 'install.yml') }}"
-    namespace: argocd
-
-- name: add bootstrap application
-  k8s:
-    state: present
-    kubeconfig: "{{ kubeconfig }}"
-    definition: "{{ lookup('file', 'bootstrap.yml') }}"
-    namespace: argocd
-
-
+    definition: "{{ manifest.stdout }}"

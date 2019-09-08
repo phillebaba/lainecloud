@@ -1,7 +1,0 @@
----
-- name: apply metrics server fix
-  k8s:
-    state: present
-    kubeconfig: "{{ kubeconfig }}"
-    definition: "{{ lookup('file', 'metrics-server/' + item.path) | from_yaml_all | list }}"
-  with_filetree: "metrics-server"

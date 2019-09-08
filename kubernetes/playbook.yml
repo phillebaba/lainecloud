@@ -39,5 +39,5 @@
     kubeconfig: "/etc/rancher/k3s/k3s.yaml"
   roles:
     - storage-provisioner
-    - metrics-fix
+    - metrics-server
     - argocd
