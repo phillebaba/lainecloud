@@ -5,4 +5,13 @@ bases:
 resources:
   - ingress.yml
   - bootstrap.yml
+images:
+  - name: argoproj/argocd
+    newName: phillebaba/argo-cd
+    newTag: latest
+  - name: quay.io/dexidp/dex
+    newName: cyrilix/dex
+    newTag: latest
+patchesStrategicMerge:
+  - patch.yml
 namespace: argocd
