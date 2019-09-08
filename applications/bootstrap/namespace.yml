@@ -37,13 +37,13 @@ spec:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: platform
+  name: application
 ---
 apiVersion: v1
 kind: LimitRange
 metadata:
   name: mem-limit-range
-  namespace: platform
+  namespace: application
 spec:
   limits:
   - default:

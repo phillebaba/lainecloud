@@ -1,0 +1,15 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bike-touring-tracker
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/phillebaba/laine-cloud.git
+    targetRevision: master
+    path: applications/bike-touring-tracker
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: application
