@@ -4,7 +4,7 @@
     - hypriot
 
 - hosts:
-    - nfs
+    - storage
   gather_facts: true
   roles:
     - disk-format
@@ -38,6 +38,6 @@
   vars:
     kubeconfig: "/etc/rancher/k3s/k3s.yaml"
   roles:
-    - nfs
+    - storage-provisioner
     - metrics-fix
     - argocd
