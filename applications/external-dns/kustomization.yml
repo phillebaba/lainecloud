@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+  - github.com/phillebaba/manifests//external-dns/overlays/rfc2136?ref=feature/external-dns
+resources:
+  - secret.yml
+images:
+  - name:	registry.opensource.zalan.do/teapot/external-dns
+    newName: thokra/external-dns-arm
+    newTag: latest
+namespace: ingress
