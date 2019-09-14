@@ -1,9 +1,0 @@
-[kubemonkey]
-run_hour = 4
-start_hour = 5
-end_hour = 22
-blacklisted_namespaces = ["kube-system"]
-
-[debug]
-enabled= true
-schedule_immediate_kill= true
