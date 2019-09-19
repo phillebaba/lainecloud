@@ -1,5 +1,5 @@
 - name: render metrics-server kustomization
-  command: kubectl kustomize "{{ role_path }}/files"
+  command: kustomize build "{{ role_path }}/files"
   delegate_to: localhost
   register: manifest
 
