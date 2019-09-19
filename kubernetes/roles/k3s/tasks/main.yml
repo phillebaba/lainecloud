@@ -1,4 +1,19 @@
----
+- name: get current k3s version
+  command: k3s --version
+  ignore_errors: true
+  register: result
+
+- set_fact:
+    current_k3s_version: "{{ result.stdout | regex_search('(v\\d\\.\\d\\.\\d)') }}"
+  when: result.rc == 0
+
+- set_fact:
+    current_k3s_version: ""
+  when: result.rc != 0
+
+- debug:
+    var: current_k3s_version
+
 - name: download k3s binary
   become: true
   get_url:
@@ -6,6 +21,7 @@
     dest: /usr/local/bin/k3s
     mode: "0777"
     force: true
+  when: current_k3s_version != k3s_version
 
 - block:
   - name: set master start command
@@ -29,7 +45,6 @@
       enabled: true
       state: restarted
   when: "'master' in group_names"
-
 
 - block:
   - name: set extra nfs label
