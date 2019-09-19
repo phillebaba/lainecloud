@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-server
+spec:
+  template:
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/nfs: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs-server
+spec:
+  clusterIP: 10.43.118.159
