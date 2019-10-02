@@ -3,7 +3,7 @@ kind: Kustomization
 bases:
   - github.com/phillebaba/manifests//argo/base
 resources:
-  - ingress.yml
+  - ingress_route.yml
   - bootstrap.yml
 images:
   - name: argoproj/argocd

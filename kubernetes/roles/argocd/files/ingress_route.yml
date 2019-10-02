@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd
+  annotations:
+    kubernetes.io/ingress.class: traefik-private
+spec:
+  entryPoints:
+    - http
+  routes:
+  - match: Host(`argocd.internal.lainecloud.com`)
+    kind: Rule
+    services:
+    - name: argocd-server
+      port: 80
