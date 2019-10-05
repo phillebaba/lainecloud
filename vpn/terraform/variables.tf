@@ -9,7 +9,3 @@ variable "public_key_path" {
 variable "open_vpn_instance_type" {
   default = "t2.micro"
 }
-
-variable "domain_name" {
-  description = "Domain name to direct to client"
-}
