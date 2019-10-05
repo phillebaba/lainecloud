@@ -1,6 +1,5 @@
----
 - name: copy easy-rsa script
-  command: "cp -R /usr/share/easy-rsa/3.0.3/ /home/ec2-user/openvpn-ca"
+  command: "cp -R /usr/share/easy-rsa/3.0.6/ /home/ec2-user/openvpn-ca"
   args:
     creates: /home/ec2-user/openvpn-ca
   become: true
@@ -45,25 +44,30 @@
       chdir: ~/openvpn-ca
       creates: ~/openvpn-ca/pki/ta.key
 
-  - name: build client certificates
-    command: ./easyrsa --batch build-client-full client1 nopass
-    args:
-      chdir: ~/openvpn-ca
-      creates: ~/openvpn-ca/pki/issued/client1.crt
-  environment:
-    EASYRSA_KEY_SIZE: 2048
-    EASYRSA_DN: "org"
-    EASYRSA_REQ_CN: "lainecloud.com"
-    EASYRSA_REQ_COUNTRY: "SE"
-    EASYRSA_REQ_PROVINCE: "SE"
-    EASYRSA_REQ_CITY: "Gothenburg"
-    EASYRSA_REQ_ORG: "Lainecloud"
-    EASYRSA_REQ_OU: "IT"
-    EASYRSA_REQ_EMAIL: "philip.laine@gmail.com"
-    EASYRSA_REQ_KEY_NAME: "server"
-
 - name: copy certificates and keys
   command: cp ca.crt issued/server.crt private/server.key dh.pem ta.key /etc/openvpn
   args:
     chdir: /home/ec2-user/openvpn-ca/pki
+  become: true
+
+- name: enable ipv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: true
+
+- name: make sure log directory exists
+  file:
+    path: /var/log/openvpn
+    state: directory
+    recurse: yes
+  become: true
+
+- name: add openvpn server config file
+  template:
+    src: server.conf.j2
+    dest: /etc/openvpn/server.conf
   become: true

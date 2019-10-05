@@ -1,0 +1,65 @@
+- name: generate client certificates
+  command: ./easyrsa --batch build-client-full client1 nopass
+  args:
+    chdir: ~/openvpn-ca
+    creates: ~/openvpn-ca/pki/issued/client1.crt
+  environment:
+    EASYRSA_KEY_SIZE: 2048
+    EASYRSA_DN: "org"
+    EASYRSA_REQ_CN: "lainecloud.com"
+    EASYRSA_REQ_COUNTRY: "SE"
+    EASYRSA_REQ_PROVINCE: "SE"
+    EASYRSA_REQ_CITY: "Gothenburg"
+    EASYRSA_REQ_ORG: "Lainecloud"
+    EASYRSA_REQ_OU: "IT"
+    EASYRSA_REQ_EMAIL: "philip.laine@gmail.com"
+    EASYRSA_REQ_KEY_NAME: "server"
+
+- name: make sure destination dir exists
+  file:
+    path: /etc/openvpn/ccd
+    state: directory
+    recurse: yes
+  become: true
+
+- name: add client configuration
+  copy:
+    content: |
+      iroute {{ k8s_cluster_subnet }}
+      iroute {{ k8s_loadbalancer_subnet }}
+    dest: /etc/openvpn/ccd/client1
+  become: true
+
+# Routing
+- name: start and enable iptables
+  service:
+    name: iptables
+    state: started
+    enabled: true
+  become: true
+
+- name: flush table
+  iptables:
+    flush: true
+  become: true
+
+- name: add nat routing rule
+  iptables:
+    table: nat
+    chain: PREROUTING
+    jump: DNAT
+    in_interface: eth0
+    protocol: "{{ item.protocol }}"
+    source_port: "{{ item.source_port }}"
+    destination_port: "{{ item.destination_port }}"
+    to_destination: "{{ item.ip }}"
+  become: true
+  with_items: "{{ k8s_public_loadbalancer }}"
+
+- name: masquerade tun0 interface
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    jump: MASQUERADE
+    out_interface: tun0
+  become: true

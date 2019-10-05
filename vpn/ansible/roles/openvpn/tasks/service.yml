@@ -1,0 +1,6 @@
+- name: start and enable openvpn service
+  service:
+    name: "openvpn@server"
+    state: restarted
+    enabled: true
+  become: true

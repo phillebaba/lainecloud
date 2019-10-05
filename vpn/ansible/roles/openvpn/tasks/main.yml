@@ -1,5 +1,4 @@
----
-- import_tasks: install.yml
-- import_tasks: easy-rsa.yml
-- import_tasks: openvpn.yml
-- import_tasks: iptables.yml
+- import_tasks: dependencies.yml
+- import_tasks: server.yml
+- import_tasks: client.yml
+- import_tasks: service.yml

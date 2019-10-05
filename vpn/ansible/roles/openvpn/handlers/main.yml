@@ -1,5 +1,0 @@
----
-- name: save iptables rules
-  shell: "iptables-save > /etc/iptables.conf"
-  listen: "save iptables"
-  become: true

@@ -40,4 +40,5 @@ explicit-exit-notify 1
 
 # Routing config for clients
 client-config-dir /etc/openvpn/ccd
-route 192.168.2.0 255.255.255.0
+route {{ k8s_cluster_subnet }}
+route {{ k8s_loadbalancer_subnet }}
