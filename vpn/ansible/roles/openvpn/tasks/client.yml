@@ -41,6 +41,7 @@
 - name: flush table
   iptables:
     flush: true
+    table: nat
   become: true
 
 - name: add nat routing rule
@@ -50,9 +51,8 @@
     jump: DNAT
     in_interface: eth0
     protocol: "{{ item.protocol }}"
-    source_port: "{{ item.source_port }}"
-    destination_port: "{{ item.destination_port }}"
-    to_destination: "{{ item.ip }}"
+    destination_port: "{{ item.source_port }}"
+    to_destination: "{{ item.ip }}:{{ item.destination_port }}"
   become: true
   with_items: "{{ k8s_public_loadbalancer }}"
 
