@@ -6,7 +6,7 @@ metadata:
     kubernetes.io/ingress.class: traefik-private
 spec:
   entryPoints:
-    - http
+    - http-private
   routes:
   - match: Host(`argocd.internal.lainecloud.com`)
     kind: Rule

@@ -7,8 +7,8 @@ resources:
   - bootstrap.yml
 images:
   - name: argoproj/argocd
-    newName: phillebaba/argo-cd
-    newTag: latest
+    newName: phillebaba/argocd
+    newTag: v1.2.3
   - name: quay.io/dexidp/dex
     newName: cyrilix/dex
     newTag: latest
