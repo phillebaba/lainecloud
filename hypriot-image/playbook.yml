@@ -4,9 +4,9 @@
 
   vars:
     username: admin
-    ssh_key_path: "~/.ssh/id_rsa.pub"
+    ssh_key_path: "~/.ssh/lainecloud.pub"
     ssh_key: "{{ lookup('file', ssh_key_path) }}"
-    image_version: v1.11.1
+    image_version: v1.11.2
     image_url: "https://github.com/hypriot/image-builder-rpi/releases/download/{{ image_version }}/hypriotos-rpi-{{ image_version }}.img.zip"
 
   vars_prompt:
@@ -15,19 +15,25 @@
       private: false
 
     - name: "device"
-      prompt: "Which device should be flashed (e.g. /dev/sdb)"
+      prompt: "Which device should be flashed"
+      default: "/dev/sdb"
       private: false
 
   tasks:
-    - name: create temporary build directory
+    - name: create temporary directory
       tempfile:
         state: directory
-        suffix: build
-      register: tmp_directory
+      register: tmp_dir
 
-    - name: set cloud init path
-      set_fact:
-        cloud_init_path: "{{ tmp_directory.path }}/cloud-init.yml"
+    - name: download flash tool
+      get_url:
+        url: https://github.com/hypriot/flash/releases/download/2.3.0/flash
+        dest: "{{ tmp_dir.path }}"
+        mode: a+x
+
+    - set_fact:
+        flash_cmd: "{{ tmp_dir.path }}/flash"
+        cloud_init_path: "{{ tmp_dir.path }}/cloud-init.yml"
 
     - name: create cloud init file
       template:
@@ -35,5 +41,5 @@
         dest: "{{ cloud_init_path }}"
 
     - name: flash sd card
-      command: "flash -f -d {{ device }} -u {{ cloud_init_path }} {{ image_url }}"
+      command: "{{ flash_cmd }} -f -d {{ device }} -u {{ cloud_init_path }} {{ image_url }}"
 
