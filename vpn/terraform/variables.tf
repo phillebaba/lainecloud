@@ -3,7 +3,7 @@ variable "name" {
 }
 
 variable "public_key_path" {
-  default = "~/.ssh/id_rsa.pub"
+  default = "~/.ssh/lainecloud-vpn.pub"
 }
 
 variable "open_vpn_instance_type" {
