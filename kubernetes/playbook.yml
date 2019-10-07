@@ -3,7 +3,7 @@
     - hypriot
 
 - hosts:
-    - storage
+    - nfs
   gather_facts: true
   roles:
     - disk-format
