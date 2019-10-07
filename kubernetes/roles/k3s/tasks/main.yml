@@ -67,7 +67,7 @@
 
   - name: set worker start command
     set_fact:
-      start_command: "/usr/local/bin/k3s agent --server https://{{ groups.master[0] }}:6443 --token {{ join_token.stdout }} --docker {{ extra_label }}"
+      start_command: "/usr/local/bin/k3s agent --server https://{{ groups.master[0] }}:6443 --token {{ join_token.stdout }} {{ extra_label }}"
 
   - name: copy k3s service file
     become: true
