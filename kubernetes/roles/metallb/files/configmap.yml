@@ -1,0 +1,16 @@
+kind: ConfigMap
+metadata:
+  name: config
+  namespace: ingress
+apiVersion: v1
+data:
+  config: |
+    peers:
+    - peer-address: 192.168.1.1
+      peer-asn: 64512
+      my-asn: 64513
+    address-pools:
+    - name: default
+      protocol: bgp
+      addresses:
+      - 192.168.2.10-192.168.2.250

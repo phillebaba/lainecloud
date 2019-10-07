@@ -1,7 +1,7 @@
-- name: render metrics-server kustomization
+- name: render metallb kustomization
   command: kubectl kustomize "{{ role_path }}/files"
   delegate_to: localhost
   register: manifest
 
-- name: provision metrics-server
+- name: provision metallb
   shell: "echo {{ manifest.stdout | quote }} | {{ kubectl_cmd }} --kubeconfig {{ kubeconfig }} apply -f -"

@@ -1,17 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-bases:
-  - github.com/phillebaba/manifests//argo/base
 resources:
-  - ingress_route.yml
-  - bootstrap.yml
+- namespace.yml
+- bootstrap.yml
+bases:
+- github.com/phillebaba/manifests//argo/base
 images:
-  - name: argoproj/argocd
-    newName: phillebaba/argocd
-    newTag: v1.2.3
-  - name: quay.io/dexidp/dex
-    newName: cyrilix/dex
-    newTag: latest
+- name: argoproj/argocd
+  newName: phillebaba/argocd
+  newTag: v1.2.3
+- name: quay.io/dexidp/dex
+  newName: cyrilix/dex
+  newTag: latest
 patchesStrategicMerge:
-  - patch.yml
+- patch.yml
 namespace: argocd

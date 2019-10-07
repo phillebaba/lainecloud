@@ -1,18 +1,7 @@
-- name: create argocd namespace
-  k8s:
-    kubeconfig: "{{ kubeconfig }}"
-    name: argocd
-    api_version: v1
-    kind: Namespace
-    state: present
-
 - name: render argocd kustomization
   command: kubectl kustomize "{{ role_path }}/files"
   delegate_to: localhost
   register: manifest
 
 - name: provision argocd
-  k8s:
-    state: present
-    kubeconfig: "{{ kubeconfig }}"
-    definition: "{{ manifest.stdout }}"
+  shell: "echo {{ manifest.stdout | quote }} | {{ kubectl_cmd }} --kubeconfig {{ kubeconfig }} apply -f -"
