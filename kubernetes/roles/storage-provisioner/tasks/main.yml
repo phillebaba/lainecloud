@@ -1,5 +1,5 @@
 - name: render storage-provisioner kustomization
-  command: kubectl kustomize "{{ role_path }}/files"
+  command: "{{ kustomize_cmd }} build {{ role_path }}/files"
   delegate_to: localhost
   register: manifest
 

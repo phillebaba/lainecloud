@@ -18,6 +18,7 @@
   vars:
     kubeconfig: "/etc/rancher/k3s/k3s.yaml"
     kubectl_cmd: "k3s kubectl"
+    kustomize_cmd: "kustomize"
   roles:
     - storage-provisioner
     - metrics-server
