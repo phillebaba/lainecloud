@@ -71,17 +71,9 @@ resource "aws_instance" "open_vpn" {
 }
 
 # Route53
-resource "aws_route53_record" "kube-ops-view" {
+resource "aws_route53_record" "lainecloud" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "kube-ops-view.lainecloud.com"
-  type    = "A"
-  ttl     = "300"
-  records = [aws_instance.open_vpn.public_ip]
-}
-
-resource "aws_route53_record" "argocd" {
-  zone_id = data.aws_route53_zone.main.zone_id
-  name    = "argocd.lainecloud.com"
+  name    = "*.lainecloud.com"
   type    = "A"
   ttl     = "300"
   records = [aws_instance.open_vpn.public_ip]
