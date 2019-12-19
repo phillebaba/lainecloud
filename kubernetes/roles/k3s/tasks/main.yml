@@ -49,7 +49,7 @@
 - block:
   - name: set extra nfs label
     set_fact:
-      extra_label: "--node-label node-role.kubernetes.io/nfs=true"
+      extra_label: "--node-label node.kubernetes.io/role=nfs"
     when: "'nfs' in group_names"
 
   - name: wait for node-token file to be present
