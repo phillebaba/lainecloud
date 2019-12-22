@@ -1,17 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
+namespace: argocd
+
 resources:
 - namespace.yml
 - bootstrap.yml
-bases:
 - github.com/phillebaba/manifests//argo/base
+
+patchesStrategicMerge:
+- deployment_patch.yml
+
 images:
 - name: argoproj/argocd
   newName: phillebaba/argocd
-  newTag: v1.2.3
+  newTag: v1.3.6
 - name: quay.io/dexidp/dex
   newName: cyrilix/dex
   newTag: latest
-patchesStrategicMerge:
-- patch.yml
-namespace: argocd
