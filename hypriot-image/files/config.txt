@@ -1,0 +1,5 @@
+dtoverlay=pi3-disable-wifi
+dtoverlay=pi3-disable-bt
+
+dtparam=act_led_trigger=none
+dtparam=act_led_activelow=on
