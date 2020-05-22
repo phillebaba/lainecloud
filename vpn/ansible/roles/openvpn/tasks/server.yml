@@ -1,5 +1,5 @@
 - name: copy easy-rsa script
-  command: "cp -R /usr/share/easy-rsa/3.0.6/ /home/ec2-user/openvpn-ca"
+  command: "cp -R /usr/share/easy-rsa/3.0.7/ /home/ec2-user/openvpn-ca"
   args:
     creates: /home/ec2-user/openvpn-ca
   become: true

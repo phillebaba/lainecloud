@@ -41,6 +41,11 @@
 - name: flush table
   iptables:
     flush: true
+  become: true
+
+- name: flush nat table
+  iptables:
+    flush: true
     table: nat
   become: true
 
