@@ -1,3 +1,26 @@
+terraform {
+  required_version = ">=0.13.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "3.22.0"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "3.0.0"
+    }
+    pass = {
+      source  = "camptocamp/pass"
+      version = "1.4.0"
+    }
+    null = {
+      source = "hashicorp/null"
+       version = "3.0.0"
+    }
+  }
+}
+
 provider "aws" {
   region = "eu-west-1"
 }
@@ -59,7 +82,7 @@ resource "aws_subnet" "main" {
 
 # EC2
 data "aws_ami" "amazon_linux_2" {
-  most_recent = true
+  most_recent = false
   owners      = ["amazon"]
 
   filter {
@@ -69,12 +92,12 @@ data "aws_ami" "amazon_linux_2" {
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm*"]
+    values = ["amzn2-ami-hvm-2.0.20200406.0-x86_64-gp2"]
   }
 }
 
 data "pass_password" "main" {
-  path = "LaineCloud/ssh/vpn"
+  path = "laine-cloud/ssh/vpn"
 }
 
 data "tls_public_key" "main" {
