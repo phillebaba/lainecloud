@@ -1,0 +1,4 @@
+- hosts: all
+  roles:
+    - hypriot
+    - k3s

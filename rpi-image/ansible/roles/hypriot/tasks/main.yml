@@ -1,0 +1,74 @@
+- name: remove the user pirate
+  user:
+    name: pirate
+    state: absent
+    remove: yes
+
+- name: make sure wheel group exists
+  group:
+    name: wheel
+    state: present
+
+- name: allow wheel group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s
+
+- name: create admin user
+  user:
+    name: admin
+    group: users
+    groups: users,docker,adm,dialout,audio,plugdev,netdev,video,wheel
+    shell: /bin/bash
+    password_lock: true
+
+- name: ensure the locale exists
+  locale_gen:
+    name: en_US.UTF-8
+    state: present
+
+- name: disable video on boot
+  lineinfile:
+    path: /etc/rc.local
+    line: /usr/bin/tvservice -o
+    create: true
+
+- name: disable wifi
+  lineinfile:
+    path: /boot/config.txt
+    line: dtoverlay=pi3-disable-wifi
+
+- name: disable bluetooth
+  lineinfile:
+    path: /boot/config.txt
+    line: dtoverlay=pi3-disable-bt
+
+- name: disable led trigger
+  lineinfile:
+    path: /boot/config.txt
+    line: dtparam=act_led_trigger=none
+
+- name: disable led low
+  lineinfile:
+    path: /boot/config.txt
+    line: dtparam=act_led_activelow=on
+
+- name: set iptables to legacy mode
+  become: true
+  alternatives:
+    name: iptables
+    path: /usr/sbin/iptables-legacy
+
+- name: update package list
+  become: true
+  apt:
+    update_cache: true
+
+- name: install nfs common
+  become: true
+  apt:
+    name: nfs-common
+    state: present

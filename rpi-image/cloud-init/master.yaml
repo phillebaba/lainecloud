@@ -1,0 +1,17 @@
+#cloud-config
+
+hostname: ""
+manage_etc_hosts: true
+package_update: false
+package_upgrade: false
+write_files:
+  - path: /etc/systemd/system/k3s.service.env
+    content: |
+      K3S_AGENT_TOKEN="${K3S_TOKEN}"
+  - path: /home/admin/.ssh/authorized_keys
+    content: |
+      ${AUTHORIZED_KEY}
+runcmd:
+  - [ systemctl, restart, avahi-daemon ]
+  - [ systemctl, enable, k3s-master ]
+  - [ systemctl, start, k3s-master ]

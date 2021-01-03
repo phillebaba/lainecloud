@@ -1,0 +1,25 @@
+- name: download k3s binary
+  become: true
+  get_url:
+    url: "{{ k3s_url }}"
+    dest: /usr/local/bin/k3s
+    mode: "0777"
+    force: true
+
+- name: copy k3s master service file
+  become: true
+  template:
+    src: ./files/k3s-master.service.j2
+    dest: /etc/systemd/system/k3s-master.service
+    owner: root
+    group: root
+    mode: 0755
+
+- name: copy k3s worker service file
+  become: true
+  template:
+    src: ./files/k3s-worker.service.j2
+    dest: /etc/systemd/system/k3s-worker.service
+    owner: root
+    group: root
+    mode: 0755
