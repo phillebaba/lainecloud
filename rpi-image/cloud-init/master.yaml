@@ -13,5 +13,6 @@ write_files:
       ${AUTHORIZED_KEY}
 runcmd:
   - [ systemctl, restart, avahi-daemon ]
+  - [ timedatectl, set-timezone, UTC ]
   - [ systemctl, enable, k3s-master ]
   - [ systemctl, start, k3s-master ]
