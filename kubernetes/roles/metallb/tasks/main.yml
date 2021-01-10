@@ -1,7 +1,0 @@
-- name: render metallb kustomization
-  command: "{{ kustomize_cmd }} build {{ role_path }}/files"
-  delegate_to: localhost
-  register: manifest
-
-- name: provision metallb
-  shell: "echo {{ manifest.stdout | quote }} | {{ kubectl_cmd }} --kubeconfig {{ kubeconfig }} apply -f -"

@@ -1,7 +1,0 @@
-- name: render storage-provisioner kustomization
-  command: "{{ kustomize_cmd }} build {{ role_path }}/files"
-  delegate_to: localhost
-  register: manifest
-
-- name: provision storage-provisioner
-  shell: "echo {{ manifest.stdout | quote }} | {{ kubectl_cmd }} --kubeconfig {{ kubeconfig }} apply -f -"
